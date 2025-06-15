@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>코바늘 뜨개 도안 생성기</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    button { margin-top: 10px; }
+    pre { background: #f0f0f0; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>코바늘 뜨개 도안 생성기</h1>
+  <label>실의 두께 (mm)
+    <input type="number" id="yarnThickness" min="0" step="0.1">
+  </label>
+  <label>작품 가로 크기 (cm)
+    <input type="number" id="width" min="1" step="1">
+  </label>
+  <label>작품 세로 크기 (cm)
+    <input type="number" id="height" min="1" step="1">
+  </label>
+  <label>뜨개 기법
+    <select id="technique">
+      <option value="basic">기본</option>
+      <option value="shell">쉘 스티치</option>
+      <option value="vstitch">V-스티치</option>
+    </select>
+  </label>
+  <button id="generate">도안 생성</button>
+  <h2>생성된 도안</h2>
+  <pre id="pattern"></pre>
+
+<script>
+function generatePattern() {
+  const yarn = parseFloat(document.getElementById('yarnThickness').value);
+  const width = parseInt(document.getElementById('width').value, 10);
+  const height = parseInt(document.getElementById('height').value, 10);
+  const technique = document.getElementById('technique').value;
+
+  if (!yarn || !width || !height) {
+    alert('모든 값을 입력하세요.');
+    return;
+  }
+
+  const stitchesPerCm = Math.round(10 / yarn); // 간단한 가정
+  const rows = height * stitchesPerCm;
+  const chains = width * stitchesPerCm;
+
+  let pattern = `사슬 ${chains}코로 시작합니다.\n`;
+  for (let r = 1; r <= rows; r++) {
+    switch (technique) {
+      case 'shell':
+        pattern += `${r}단: *(한길긴뜨기 5코, 2코 건너뛰기)* 반복\n`;
+        break;
+      case 'vstitch':
+        pattern += `${r}단: *(한길긴뜨기, 사슬 1, 한길긴뜨기, 2코 건너뛰기)* 반복\n`;
+        break;
+      default:
+        pattern += `${r}단: 한길긴뜨기 ${chains}코\n`;
+    }
+  }
+
+  document.getElementById('pattern').textContent = pattern;
+}
+
+document.getElementById('generate').addEventListener('click', generatePattern);
+</script>
+
+</body>
+</html>
